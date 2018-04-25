@@ -1,0 +1,52 @@
+select count(*) from v$process;----系统有多少连接数
+select value from v$parameter where name = 'processes';-------oracle设置中设置了多少连接数
+alter system set processes = 300 scope = spfile;------修改连接池数 
+
+目前总结的语句，在查看数据的连接情况很有用，写完程序一边测试代码一边查看数据库连接的释放情况有助于分析优化出一个健壮的系统程序来。
+
+1.
+Sql代码
+1.select count(*) fromv$process  
+select count(*) from v$process where program=‘ORACLE.EXE(SHAD)’; --当前的数据库连接数
+
+2.
+Sql代码
+1.select value from v$parameter where name ='processes' 
+select value from v$parameter where name ='processes'--数据库允许的最大连接数
+
+3.
+Sql代码
+1.alter system set processes = 300 scope =spfile; 
+alter system set processes = 300 scope = spfile;--修改最大连接数:
+
+4.
+Sql代码
+1.shutdown immediate;  
+2.startup; 
+shutdown immediate;
+startup;--重启数据库
+
+5.
+Sql代码
+1.SELECT osuser, a.username,cpu_time/executions/1000000||'s',b.sql_text,machine   
+2.from v$session a, v$sqlareab  
+3.where a.sql_address =b.address order by cpu_time/executionsdesc; 
+SELECT osuser, a.username,cpu_time/executions/1000000||'s',b.sql_text,machine
+from v$session a, v$sqlarea b
+where a.sql_address =b.address order by cpu_time/executionsdesc;
+--查看当前有哪些用户正在使用数据
+
+6.
+Sql代码
+1.select count(*) fromv$session  
+select count(*) from v$session  --当前的session连接数
+
+7.
+Sql代码
+1.select count(*) from v$session wherestatus='ACTIVE' 
+select count(*) from v$session where status='ACTIVE'　--并发连接数
+
+8.
+Sql代码
+1.show parameterprocesses  
+show parameter processes  --最大连接
